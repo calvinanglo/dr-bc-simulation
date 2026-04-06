@@ -6,8 +6,8 @@ Owner: network/systems team
 
 This runbook covers full site failover from primary (site-a) to secondary (site-b). It's written to be executed by anyone on the team — not just the person who built the environment. Steps include timing checkpoints so we can measure RTO against targets.
 
-Primary site: 192.168.10.0/24 (Proxmox node 1)
-Secondary site: 192.168.20.0/24 (Proxmox node 2)
+Primary site: 10.10.20.0/24 — VLAN 20 (Proxmox node 1)
+Secondary site: 10.10.20.0/24 — VLAN 20 (Proxmox node 2)
 
 ---
 
@@ -30,10 +30,10 @@ Before declaring a disaster and initiating failover, confirm that the primary si
         
          9. ### 1.1 access secondary site firewall
         
-         10. SSH to site-b pfSense at 192.168.20.1 from the management jump host or out-of-band console.
+         10. SSH to site-b pfSense at 10.0.0.3 from the management jump host or out-of-band console.
         
          11. ```
-             ssh admin@192.168.20.1
+             ssh admin@10.0.0.3
              ```
 
              ### 1.2 verify secondary WAN link is active
@@ -51,7 +51,7 @@ Before declaring a disaster and initiating failover, confirm that the primary si
 
              ```
              route del default
-             route add default gw 192.168.20.1
+             route add default gw 10.0.0.3
              ```
 
              On production, this would be a BGP prefix announcement — site-b would start advertising the same IP space.
@@ -61,9 +61,9 @@ Before declaring a disaster and initiating failover, confirm that the primary si
              Update internal DNS to point service records to site-b IPs. Zone file changes are in `/etc/bind/zones/` on the DNS server.
 
              Key records to update:
-             - web.internal → 192.168.20.10 (was 192.168.10.10)
-             - - db.internal → 192.168.20.20 (was 192.168.10.20)
-               - - monitor.internal → 192.168.20.30 (was 192.168.10.30)
+             - web.internal → 10.10.20.110 (was 10.10.20.10)
+             - - db.internal → 10.10.20.120 (was 10.10.20.20)
+               - - monitor.internal → 10.10.20.130 (was 10.10.20.30)
                 
                  - ```
                    vim /etc/bind/zones/db.internal
@@ -86,7 +86,7 @@ Before declaring a disaster and initiating failover, confirm that the primary si
                    Backups land on the NAS at `//nas-01/backups/postgresql/`. Check for the most recent full backup and any WAL archives newer than it.
 
                    ```
-                   ssh backup-user@192.168.20.50
+                   ssh backup-user@10.10.20.50
                    ls -lth /mnt/backups/postgresql/full/ | head -5
                    ls -lth /mnt/backups/postgresql/wal/ | head -20
                    ```
@@ -100,7 +100,7 @@ Before declaring a disaster and initiating failover, confirm that the primary si
                    ### 2.2 restore full backup to site-b database VM
 
                    ```
-                   ssh db-server-b@192.168.20.20
+                   ssh db-server-b@10.10.20.120
                    sudo systemctl stop postgresql
                    sudo rm -rf /var/lib/postgresql/14/main/
                    sudo -u postgres pg_restore -d postgres -v /mnt/backups/postgresql/full/db_full_latest.pgdump
@@ -151,7 +151,7 @@ Before declaring a disaster and initiating failover, confirm that the primary si
                    Wait for VM to boot (~2 min), then SSH in and verify services:
 
                    ```
-                   ssh 192.168.20.10
+                   ssh 10.10.20.110
                    systemctl status nginx
                    systemctl status app-service
                    ```
@@ -161,7 +161,7 @@ Before declaring a disaster and initiating failover, confirm that the primary si
                    The app config at `/etc/app/config.yml` has a `db_host` value pointing to site-a. Update it to site-b:
 
                    ```
-                   sed -i 's/db_host: 192.168.10.20/db_host: 192.168.20.20/' /etc/app/config.yml
+                   sed -i 's/db_host: 10.10.20.20/db_host: 10.10.20.120/' /etc/app/config.yml
                    systemctl restart app-service
                    ```
 

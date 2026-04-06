@@ -40,7 +40,7 @@ Run `scripts/backup-validate.sh` or follow these manual steps on the first Monda
 
 ```bash
 # check NAS backups
-ssh backup-user@192.168.10.50
+ssh backup-user@10.10.20.50
 ls -lth /mnt/nas-backup/postgresql/full/ | head -3
 # confirm timestamp is from last night
 
@@ -72,7 +72,7 @@ qm clone 100 999 --name restore-test --full true
 qm start 999
 
 # ssh in and install postgres
-ssh 192.168.10.99
+ssh 10.10.20.199
 sudo apt install postgresql -y
 sudo systemctl stop postgresql
 

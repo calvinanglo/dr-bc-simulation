@@ -18,6 +18,8 @@ When services are back, notify all tiers in reverse order. Include a summary of 
 
 ## contact list
 
+> Names redacted for public repository. In production, fill in actual names and contact details.
+
 | role | name | primary contact | backup contact |
 |---|---|---|---|
 | on-call engineer | rotation | PagerDuty | mobile |
