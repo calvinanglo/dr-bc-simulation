@@ -73,9 +73,9 @@ Don't use technical jargon in stakeholder communications. "PostgreSQL WAL replay
 Within 5 business days of any DR event (real or test), schedule a post-incident review with the IT team. The agenda covers:
 
 1. Timeline reconstruction — what happened, when was it detected, what was done
-2. 2. RTO/RPO actuals vs. targets
-   3. 3. What went well
-      4. 4. What broke or was slower than expected
-         5. 5. Action items with owners and due dates
-           
-            6. Action items from the review feed back into updating the DR runbook, backup configuration, or environment changes. This is the ITIL continual improvement loop applied to service continuity.
+2. RTO/RPO actuals vs. targets
+3. What went well
+4. What broke or was slower than expected
+5. Action items with owners and due dates
+
+Action items from the review feed back into updating the DR runbook, backup configuration, or environment changes. This is the ITIL continual improvement loop applied to service continuity.

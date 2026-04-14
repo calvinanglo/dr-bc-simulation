@@ -4,6 +4,28 @@ Disaster recovery and business continuity simulation built in a home lab using P
 
 The environment has a primary site (three VMs: web, database, and a pfSense firewall/router) and a simulated secondary site on a separate Proxmox node. Backups go to a local NAS via rsync and a secondary copy goes to Backblaze B2. Network failover is simulated by toggling the VLAN trunk on the primary switch.
 
+## Project Series
+
+This is **Project 5 of 5** in a production enterprise environment build. Each project builds on the previous one.
+
+| # | Project | What It Adds |
+|---|---------|-------------|
+| 1 | [Enterprise Network Segmentation](https://github.com/calvinanglo/enterprise-network-segmentation) | VLANs, OSPF, ACLs, pfSense firewall |
+| 2 | [Wazuh SIEM Deployment](https://github.com/calvinanglo/wazuh-siem-deployment) | Centralized log collection, threat detection, incident response |
+| 3 | [Compliance Hardening Pipeline](https://github.com/calvinanglo/compliance-hardening-pipeline) | Automated CIS benchmarks across all devices |
+| 4 | [Network Monitoring Stack](https://github.com/calvinanglo/network-monitoring-stack) | Prometheus, Grafana, SNMP monitoring, SLA dashboards |
+| 5 | [DR & BC Simulation](https://github.com/calvinanglo/dr-bc-simulation) | Disaster recovery testing, backup validation, RTO/RPO measurement |
+
+### Prerequisites
+- **Complete [Projects 1-4](https://github.com/calvinanglo/enterprise-network-segmentation) first** — the full environment must be operational:
+  - Network segmentation with VLANs, OSPF, and pfSense (Project 1)
+  - Wazuh SIEM collecting syslog from all devices (Project 2)
+  - CIS hardening applied to all hosts (Project 3)
+  - Prometheus/Grafana monitoring with SLA dashboards (Project 4)
+- Proxmox VE with at least 2 nodes (primary + DR site)
+- NAS storage accessible on VLAN 20 for backups
+- PostgreSQL database and web application on primary site VMs
+
 ## what's in this repo
 
 ```
